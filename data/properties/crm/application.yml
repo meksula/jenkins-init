@@ -1,0 +1,42 @@
+printer:
+  host: http://localhost:8090
+  user: crm-main
+  password: JrDAEGbxaRy5Vb7mt
+  endpoint:
+    generate: /api/v1/document/generator/stored
+    description: /api/v1/document/presenter/
+    report: /api/v1/document/generator/report
+    customerList: /api/v1/document/generator/customer/list
+
+accountant:
+  host: http://localhost:8870
+  user: crm-main
+  password: JrDAEGbxaRy5Vb7mt
+  endpoint:
+    charge: /api/v1/charge
+    chargeSet: /api/v1/charge/set
+    remit: /api/v1/remit
+    repayment: /api/v1/repayment
+    lose: /api/v1/lost
+    journalEntry: /api/v1/journal-entries/{id}
+    journalEntries: /api/v1/journal-entries
+    deleteJournalEntry: /api/v1/entry/{chargeId}
+    addInvoice: /api/v1/invoice
+    checkState: /api/v1/cash/
+    checkContractAble: /api/v1/cash/contract/right
+    payout: /api/v1/cash/payout
+    repay: /api/v1/cash/top-up
+    confirmation: /api/v1/confirmation
+    invoiceGet: /api/v1/invoice/contract/
+    confirmationGet: /api/v1/confirmation/contract/
+    operation: /api/v1/operation
+    operationPrintable: /api/v1/operation/printable/
+    operationList: /api/v1/operation/
+    cashCreate: /api/v1/cash
+    cashState: /api/v1/cash/
+    transfer: /api/v1/cash/transfer
+    all-caches: /api/v1/cash/list/all
+    operation-exchange: /api/v1/operation/exchange?target=
+    statistics: /api/v1/operation/statistics/
+    confirmation-payout: /api/v1/confirmation/payout/
+    confirmation-payout-list: /api/v1/confirmation/payout/list/

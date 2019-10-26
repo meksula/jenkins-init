@@ -1,0 +1,10 @@
+crm:
+  host: 0:0:0:0:0:0:0:1
+  user: crm-main
+  hash: $2a$10$as59.UiAOqpVCN3ZSXUpH.bQ9lyfBJD7nXEh88vAJPIvk2Q3OgyEy
+
+json:
+  files: /opt/documents/
+
+endpoint:
+  data-get: http://localhost:8888/date/check
