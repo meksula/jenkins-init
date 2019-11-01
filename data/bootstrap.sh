@@ -35,16 +35,16 @@ move_keys() {
    fi
 }
 
-move_groovy_files() {
-   GROOVY_DIR=${DOCKERFILES_HOME}/groovy
-   mkdir $GROOVY_DIR
+move_jenkins_files() {
+   mkdir ${DOCKERFILES_HOME}/groovy
+   mkdir ${DOCKERFILES_HOME}/plugins
    sudo cp /vagrant_data/groovy/* ${DOCKERFILES_HOME}/groovy
+   sudo cp /vagrant_data/jenkins-config/ ${DOCKERFILES_HOME}/plugins
 }
-
 
 # Move groovy init scripts and ssh keys for remote git repository
 move_keys
-move_groovy_files
+move_jenkins_files
 sudo yum update
 
 # Docker installation
