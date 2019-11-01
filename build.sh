@@ -56,7 +56,6 @@ copy_sensitive_files() {
       cp $CRM_PROD_YML $(pwd)/data/properties/crm/
    fi
 
-
    FILE_PATH=${CURRENT}/data/properties/accountant/application-prod.properties
    if [ ! -f "$FILE_PATH" ]; then
       read -p "===> Paste here full path to $FILE for pcp-accountant application: " ACCNT_PROD_YML

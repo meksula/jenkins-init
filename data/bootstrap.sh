@@ -2,54 +2,72 @@
 
 echo 'Jenkins initialize bootstrap script starts to run'
 
-mkdir ~/.ssh
+# cp: cannot create regular file ‘/home/vagrant/dockerfiles//groovy/’: Not a directory
 
-MKDIR_RES=${?}
-if [[ "$MKDIR_RES" -eq 1 ]]; then
-   echo "Directory for .ssh keys just exist"
-elif [[ "$MKDIR_RES" -eq 0 ]]; then
-   echo "Directory for .ssh keys created with success"
+HOME_DIR="/home/vagrant"
+SSH_DIR="/home/vagrant/.ssh"
+
+if [[ ! -d "$HOME_DIR" ]]; then
+   sudo mkdir $HOME_DIR
+fi 
+
+DOCKERFILES_HOME=${HOME_DIR}/dockerfiles/
+
+if [[ ! -f /vagrant_data/docker/Dockerfile ]]; then
+   echo "Critical error occurred and cannot find Dockerfile in exchange space!"
+   exit 1
+else 
+   sudo mkdir ${DOCKERFILES_HOME}
+   sudo cp /vagrant_data/docker/Dockerfile ${DOCKERFILES_HOME}
+   if [[ ! -f "${DOCKERFILES_HOME}/Dockerfile" ]]; then
+      echo "Dockerfile not exist! File was not copied from exchange space"
+   fi
 fi
 
-TARGET_SSH=/home/vagrant/.ssh/
-cp /vagrant_data/key/* ${TARGET_SSH}
+move_keys() {
+   if [[ -f "/vagrant_data/key/id_rsa" ]]; then
+      if [[ ! -d "${DOCKERFILES_HOME}/key" ]]; then
+         sudo mkdir ${DOCKERFILES_HOME}/key
+      fi
+      sudo cp /vagrant_data/key/* ${DOCKERFILES_HOME}/key
+   else 
+      echo "Keys not detected in exchange space. Attach them or other credentials after bootstraping process"
+   fi
+}
 
-RESULT=${?}
-if [ "${RESULT}" -ne 0 ]
-then
-   echo "Could not copy SSH keys to ${TARGET_SSH}!"
-else
-   echo "Keys correcty coppied."
-fi
+move_groovy_files() {
+   GROOVY_DIR=${DOCKERFILES_HOME}/groovy
+   mkdir $GROOVY_DIR
+   sudo cp /vagrant_data/groovy/* ${DOCKERFILES_HOME}/groovy
+}
 
-systemctl status jenkins
-IS_JENKINS_EXIST=${?}
 
-if [ ${IS_JENKINS_EXIST} -eq 4 ]
-then
-   sudo yum update
-   sudo yum -y install dnf
-   sudo dnf search openjdk
-   sudo dnf install -y java-11-openjdk
-   curl --silent --location http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo | sudo tee /etc/yum.repos.d/jenkins.repo
-   sudo rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key
-   sudo yum install -y jenkins
-   sudo systemctl start jenkins
+# Move groovy init scripts and ssh keys for remote git repository
+move_keys
+move_groovy_files
+sudo yum update
 
-   # Export to shared directory one time initial password to Jenkins
-   sudo cat /var/lib/jenkins/secrets/initialAdminPassword >> /vagrant_data/jenkins_pswd
-fi
+# Docker installation
+sudo yum install -y yum-utils device-mapper-persistent-data lvm2
+sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+sudo yum install -y docker-ce
+sudo usermod -aG docker $(whoami)
+sudo systemctl enable docker.service
+sudo systemctl start docker.service
 
-# Free line bellow you could execute after Jenkins installation
-# Maybe SSH plugin is required to add keys
-JENKINS_HOME="/var/lib/jenkins"
-sudo -su jenkins
-mkdir ${JENKINS_HOME}/.ssh
-mkdir ${JENKINS_HOME}/init.groovy.d
+# Run Docker Image
+cd ${DOCKERFILES_HOME}
 
-mv /vagrant_data/groovy/* ${JENKINS_HOME}/init.groovy.d/
+sudo docker build -t jenkins .
+sudo docker run -u root --rm -d -p 8080:8080 -p 50000:50000 -v jenkins-data/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock jenkins
+sudo docker ps
 
-cp /vagrant_data/key/* ${JENKINS_HOME}/.ssh/
-chmod 400 ${JENKINS_HOME}/.ssh/id_rsa
+# Zadania:
+# + Tutaj trzeba zbudować i odpalić dockerowy obraz Jenkinsa z Dockerfile
+# + W Dockerfile powinna być konfiguracja, która pozwoli przenieść klucze ssh oraz skrypty groovy do odpowiednich katalogów
+# + Trzeba też wyłączyć okienko autoryzacyjne 
+# - instalacja pluginów automatycznie
+# - Pullujemy sobie repozytorium z Job DSL Seed i po prostu dodajemy nowy Job
+# - Odpalamy sobie Seed Job
+# - Możemy korzystać z Jenkinsa :)
 
-echo "=== Jenkins should be ready for use ==="
