@@ -39,7 +39,7 @@ move_jenkins_files() {
    mkdir ${DOCKERFILES_HOME}/groovy
    mkdir ${DOCKERFILES_HOME}/plugins
    sudo cp /vagrant_data/groovy/* ${DOCKERFILES_HOME}/groovy
-   sudo cp /vagrant_data/jenkins-config/ ${DOCKERFILES_HOME}/plugins
+   sudo cp /vagrant_data/jenkins-config/* ${DOCKERFILES_HOME}/plugins
 }
 
 # Move groovy init scripts and ssh keys for remote git repository
