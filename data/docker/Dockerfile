@@ -1,7 +1,7 @@
-FROM jenkins/jenkins:2.60.2
+FROM jenkins/jenkins:lts
 
 COPY groovy/* /usr/share/jenkins/ref/init.groovy.d/
-COPY jobs/seed_job.groovy /usr/share/jenkins/ref/init.groovy.d/seed_job.groovy
+COPY jobs/* /usr/share/jenkins/ref/init.groovy.d/
 
 ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
 
