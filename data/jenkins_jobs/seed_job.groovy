@@ -38,7 +38,6 @@ class Server {
       }
 }
 
-def workspace = SEED_JOB.getWorkspace()
 def environments = ['staging', 'production']
 
 def user = 'jenkins_pcp'
@@ -64,14 +63,6 @@ environments.forEach { env ->
             properties {
                   githubProjectUrl('https://github.com/meksula/pcp-crm')
             }
-
-            // scm {
-            //       github('meksula/pcp-crm')
-            //       branch('master')
-            //       cleanBeforeCheckout()
-            //       cleanAfterCheckout()
-            //       wipeOutWorkspace()
-            // }
 
             steps {
                   def server = servers[env + '_backend']

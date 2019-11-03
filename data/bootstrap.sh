@@ -53,8 +53,8 @@ move_job_dsl() {
 move_resources() {
    mkdir ${DOCKERFILES_HOME}/resources
    mkdir ${DOCKERFILES_HOME}/properties
-   sudo cp /vagrant_data/resources/ ${DOCKERFILES_HOME}/resources
-   sudo cp /vagrant_data/properties/ ${DOCKERFILES_HOME}/properties
+   sudo cp /vagrant_data/resources/* ${DOCKERFILES_HOME}/resources
+   sudo cp /vagrant_data/properties/* ${DOCKERFILES_HOME}/properties
 }
 
 # Move groovy init scripts and ssh keys for remote git repository

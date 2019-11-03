@@ -14,8 +14,9 @@ COPY properties/ /var/jenkins/home/properties/
 RUN mkdir /var/jenkins_home/resources
 COPY resources/ /var/jenkins_home/resources/
 
-RUN sudo apt-get update && \
-    apt-get install git vim 
-
 COPY plugins/plugins.txt /usr/share/jenkins/ref/plugins.txt
 RUN xargs /usr/local/bin/install-plugins.sh < /usr/share/jenkins/ref/plugins.txt
+
+USER root
+RUN apt-get update && \
+    apt-get install -y git vim wget curl nmap
