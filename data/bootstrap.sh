@@ -2,8 +2,6 @@
 
 echo 'Jenkins initialize bootstrap script starts to run'
 
-# cp: cannot create regular file ‘/home/vagrant/dockerfiles//groovy/’: Not a directory
-
 HOME_DIR="/home/vagrant"
 SSH_DIR="/home/vagrant/.ssh"
 
@@ -52,10 +50,19 @@ move_job_dsl() {
    fi
 }
 
+move_resources() {
+   mkdir ${DOCKERFILES_HOME}/resources
+   mkdir ${DOCKERFILES_HOME}/properties
+   sudo cp /vagrant_data/resources/ ${DOCKERFILES_HOME}/resources
+   sudo cp /vagrant_data/properties/ ${DOCKERFILES_HOME}/properties
+}
+
 # Move groovy init scripts and ssh keys for remote git repository
 move_keys
 move_jenkins_files
 move_job_dsl
+move_resources
+
 sudo yum update
 
 # Docker installation
@@ -72,14 +79,3 @@ cd ${DOCKERFILES_HOME}
 sudo docker build -t jenkins .
 sudo docker run -u root --rm -d -p 8080:8080 -p 50000:50000 -v jenkins-data/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock jenkins
 sudo docker ps
-
-# Zadania:
-# + Tutaj trzeba zbudować i odpalić dockerowy obraz Jenkinsa z Dockerfile
-# + W Dockerfile powinna być konfiguracja, która pozwoli przenieść klucze ssh oraz skrypty groovy do odpowiednich katalogów
-# + Trzeba też wyłączyć okienko autoryzacyjne 
-# + instalacja pluginów automatycznie
-# - Dane użytkowników do logowania, trzeba wynieść do osobnego pliku
-# - Pullujemy sobie repozytorium z Job DSL Seed i po prostu dodajemy nowy Job
-# - Odpalamy sobie Seed Job via REST API
-# - Możemy korzystać z Jenkinsa :)
-

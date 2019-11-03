@@ -1,0 +1,5 @@
+production_backend:
+  name: Production backend
+  ip: '34.38.123.456'
+  username: 'root'
+  remoteDirectory: '/opt/app'

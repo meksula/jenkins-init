@@ -1,3 +1,4 @@
 /.vagrant/
 /data/properties/*/application-prod.properties
 /data/key/*
+/data/resources/hosts.yml

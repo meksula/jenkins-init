@@ -1,5 +1,7 @@
 #!groovy
  
+@Grab('org.yaml:snakeyaml:1.17')
+import org.yaml.snakeyaml.Yaml
 import jenkins.model.*
 import hudson.security.*
 import jenkins.security.s2m.AdminWhitelistRule
@@ -8,9 +10,13 @@ import jenkins.security.s2m.AdminWhitelistRule
 
 def instance = Jenkins.getInstance()
  
- 
+def users = new Yaml().load(("/var/jenkins_home/resources/users.yml" as File).text)
+
 def hudsonRealm = new HudsonPrivateSecurityRealm(false)
-hudsonRealm.createAccount("admin", "password")
+users.each { key, val ->
+      hudsonRealm.createAccount(val.username, val.password)
+      println 'Account created for user: ' + val.username
+}
 instance.setSecurityRealm(hudsonRealm)
 
 instance.setAuthorizationStrategy(new FullControlOnceLoggedInAuthorizationStrategy())
