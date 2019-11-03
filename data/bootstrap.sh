@@ -53,8 +53,8 @@ move_job_dsl() {
 move_resources() {
    mkdir ${DOCKERFILES_HOME}/resources
    mkdir ${DOCKERFILES_HOME}/properties
-   sudo cp /vagrant_data/resources/* ${DOCKERFILES_HOME}/resources
-   sudo cp /vagrant_data/properties/* ${DOCKERFILES_HOME}/properties
+   sudo cp -r /vagrant_data/resources/* ${DOCKERFILES_HOME}/resources/
+   sudo cp -r /vagrant_data/properties/* ${DOCKERFILES_HOME}/properties/
 }
 
 # Move groovy init scripts and ssh keys for remote git repository
@@ -73,7 +73,7 @@ sudo usermod -aG docker $(whoami)
 sudo systemctl enable docker.service
 sudo systemctl start docker.service
 
-# Run Docker Image
+# Build and run Docker Image
 cd ${DOCKERFILES_HOME}
 
 sudo docker build -t jenkins .

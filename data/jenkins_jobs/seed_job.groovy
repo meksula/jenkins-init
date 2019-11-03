@@ -59,17 +59,36 @@ environments.forEach { env ->
 
       freeStyleJob(targetDir + "/pcp-crm-" + env) {
             description('PCP CRM building pipeline job for ' + env + ' environment')
+            keepDependencies(false)
 
             properties {
                   githubProjectUrl('https://github.com/meksula/pcp-crm')
             }
 
-            steps {
-                  def server = servers[env + '_backend']
-                  if(server != null) {
-                        shell('/var/jenkins_home/resources/shell/send_over_ssh.sh ' + server.all())
-                  }
-            } 
+            // scm {
+            //       git {
+            //             remote {
+            //                   credentials()
+            //                   github("/meksula/pcp-crm", 'ssh')
+            //             }
+            //             extenstions {
+            //                   cleanAfterCheckout()
+            //                   wipeOutWorkspace()
+            //             }
+            //       }
+            // }
+
+            // steps {
+            //       def serverKey = env + '_backend'
+            //       def server = servers[serverKey]
+            //       if(server != null) {
+            //             shell('/var/jenkins_home/resources/shell/send_over_ssh.sh ' + server.all())
+            //       }
+            //       else {
+            //             println 'Cannot send file to remote server because server with name: '
+            //              + serverKey + ' not exists in hosts.yml'
+            //       }
+            // } 
       }
 
       freeStyleJob(targetDir + "/pcp-accountant-" + env) {
@@ -88,5 +107,11 @@ environments.forEach { env ->
             steps {
                   shell "Hello world!"
             }      
+      }
+}
+
+job('Config hosts SSH') {
+      steps {
+            
       }
 }
